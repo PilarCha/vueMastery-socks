@@ -26,13 +26,15 @@ var app = new Vue ({
     cart:0
   },
   methods: {
+    //increment cart by one when add to cart is clicked.
     addToCart() {
       this.cart += 1
     },
+    //the mouseover on the div with the color updates the index. Useing the updated index to switch to a different variant
     updateProduct(index) {
       this.selectedVariant = index;
-      console.log(index)
     },
+    //decrement 1 if somehting in cart otherwise do nothing
     removeFromCart() {
       this.cart == 0 ? this.cart = 0 : this.cart -= 1
     }
