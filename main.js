@@ -99,15 +99,19 @@ Vue.component('product', {
     title() {
       return this.brand + ' ' +this.product
     },
+
     image() {
       return this.variants[this.selectedVariant].variantImage
     },
+
     inStock() {
       return this.variants[this.selectedVariant].variantQty
     },
+
     checkSale() {
       if (this.onSale) return `${this.brand}  ${this.product} is on sale!`
     },
+
     shipping() {
       console.log(this.premium)
       if (this.premium) {
@@ -123,6 +127,12 @@ Vue.component('product', {
 Vue.component('product-review', {
   template: `
   <form class="review-form" @submit.prevent="onSubmit">
+    <p v-if="errors.length">
+    <b>Please Correct the following error(s)</b>
+    <ul>
+      <li v-for="error in errors">{{ error }}</li>
+    </ul>
+    </p>
         <p>
           <label for="name">Name:</label>
           <input id="name" v-model="name">
@@ -130,7 +140,7 @@ Vue.component('product-review', {
 
         <p>
           <label for="review">Review:</label>
-          <textarea id="review" v-model="review" required></textarea>
+          <textarea id="review" v-model="review"></textarea>
         </p>
 
         <p>
@@ -150,24 +160,38 @@ Vue.component('product-review', {
 
     </form>
   `,
+
   data() {
     return {
       name: null,
       review: null,
-      rating: null
+      rating: null,
+      errors: []
     }
   },
+
   methods: {
+
     onSubmit() {
-      let productReview = {
-        name: this.name,
-        review: this.review,
-        rating: this.rating
+      if(this.name && this.review && this.rating) {
+
+        let productReview = {
+          name: this.name,
+          review: this.review,
+          rating: this.rating
+        }
+
+        this.$emit('review-submitted',productReview)
+        this.name = null
+        this.review=null
+        this.rating = null
+
+      } else {
+
+        if(!this.name) this.errors.push("Name required")
+        if(!this.review) this.errors.push("Review required")
+        if(!this.rating) this.errors.push("Rating required")
       }
-      this.$emit('review-submitted',productReview)
-      this.name = null
-      this.review=null
-      this.rating = null
     }
   }
 })
